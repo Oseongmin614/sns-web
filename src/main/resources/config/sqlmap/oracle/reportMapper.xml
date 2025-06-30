@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.ac.kopo.sns.dao.ReportDAO">
+
+    <resultMap id="reportMap" type="reportVO">
+        <id property="reportId" column="REPORT_ID"/>
+        <result property="reporterId" column="REPORTER_ID"/>
+        <result property="targetType" column="TARGET_TYPE"/>
+        <result property="targetId" column="TARGET_ID"/>
+        <result property="reason" column="REASON"/>
+        <result property="detail" column="DETAIL"/>
+        <result property="status" column="STATUS"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="handledBy" column="HANDLED_BY"/>
+        <result property="handledAt" column="HANDLED_AT"/>
+    </resultMap>
+
+    <insert id="insertReport" parameterType="reportVO" useGeneratedKeys="true" keyProperty="reportId">
+        INSERT INTO REPORTS (REPORT_ID, REPORTER_ID, TARGET_TYPE, TARGET_ID, REASON, DETAIL, STATUS, CREATED_AT)
+        VALUES (SEQ_REPORT_ID.NEXTVAL, #{reporterId}, #{targetType}, #{targetId}, #{reason}, #{detail}, #{status}, SYSDATE)
+    </insert>
+
+    <select id="selectReportById" parameterType="long" resultMap="reportMap">
+        SELECT * FROM REPORTS WHERE REPORT_ID = #{reportId}
+    </select>
+
+    <update id="updateReportStatus" parameterType="reportVO">
+        UPDATE REPORTS SET STATUS = #{status}, HANDLED_BY = #{handledBy}, HANDLED_AT = SYSDATE WHERE REPORT_ID = #{reportId}
+    </update>
+
+    <select id="selectAllReports" resultMap="reportMap">
+        SELECT * FROM REPORTS ORDER BY CREATED_AT DESC
+    </select>
+
+</mapper>

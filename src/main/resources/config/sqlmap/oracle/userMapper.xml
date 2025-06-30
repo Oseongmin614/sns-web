@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.ac.kopo.sns.dao.UserDAO">
+
+    <resultMap id="userMap" type="userVO">
+        <id property="userId" column="USER_ID"/>
+        <result property="email" column="EMAIL"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="profileImg" column="PROFILE_IMG"/>
+        <result property="bio" column="BIO"/>
+        <result property="role" column="ROLE"/>
+        <result property="status" column="STATUS"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="lastLoginAt" column="LAST_LOGIN_AT"/>
+        <result property="postsCount" column="POSTS_COUNT"/>
+        <result property="followersCount" column="FOLLOWERS_COUNT"/>
+        <result property="followingCount" column="FOLLOWING_COUNT"/>
+    </resultMap>
+
+    <!-- 이메일로 사용자 조회 -->
+    <select id="selectUserByEmail" parameterType="string" resultMap="userMap">
+        SELECT * FROM USERS 
+        WHERE EMAIL = #{email} AND IS_DELETED = 'N'
+    </select>
+
+    <!-- ID로 사용자 조회 -->
+    <select id="selectUserById" parameterType="long" resultMap="userMap">
+        SELECT * FROM USERS 
+        WHERE USER_ID = #{userId} AND IS_DELETED = 'N'
+    </select>
+
+    <!-- 사용자 등록 -->
+    <insert id="insertUser" parameterType="userVO" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO USERS (
+            USER_ID, EMAIL, PASSWORD, NICKNAME, PROFILE_IMG, BIO, 
+            ROLE, STATUS, IS_DELETED, CREATED_AT, UPDATED_AT, 
+            POSTS_COUNT, FOLLOWERS_COUNT, FOLLOWING_COUNT
+        ) VALUES (
+            SEQ_USER_ID.NEXTVAL, #{email}, #{password}, #{nickname}, #{profileImg}, 
+            #{bio}, #{role}, #{status}, #{isDeleted}, SYSDATE, SYSDATE, 
+            0, 0, 0
+        )
+    </insert>
+
+    <!-- 닉네임 중복 체크 -->
+    <select id="countByNickname" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM USERS 
+        WHERE NICKNAME = #{nickname} AND IS_DELETED = 'N'
+    </select>
+
+    <!-- 마지막 로그인 시간 업데이트 -->
+    <update id="updateLastLoginTime" parameterType="long">
+        UPDATE USERS SET LAST_LOGIN_AT = SYSDATE 
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <!-- 비밀번호 변경 -->
+    <update id="updatePassword" parameterType="map">
+        UPDATE USERS SET 
+            PASSWORD = #{password}, 
+            UPDATED_AT = SYSDATE 
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <!-- 모든 사용자 조회 -->
+    <select id="selectAllUsers" resultMap="userMap">
+        SELECT * FROM USERS 
+        WHERE IS_DELETED = 'N'
+        ORDER BY CREATED_AT DESC
+    </select>
+
+</mapper>

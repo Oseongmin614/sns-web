@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.ac.kopo.sns.dao.PostDAO">
+
+    <resultMap id="postMap" type="postVO">
+        <id property="postId" column="POST_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="imageUrl" column="IMAGE_URL"/>
+        <result property="likeCount" column="LIKE_COUNT"/>
+        <result property="commentCount" column="COMMENT_COUNT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+    </resultMap>
+
+    <select id="selectAllPosts" resultMap="postMap">
+        SELECT * FROM POSTS WHERE IS_DELETED = 'N' ORDER BY CREATED_AT DESC
+    </select>
+
+    <select id="selectPostById" parameterType="long" resultMap="postMap">
+        SELECT * FROM POSTS WHERE POST_ID = #{postId}
+    </select>
+
+    <insert id="insertPost" parameterType="postVO" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO POSTS (POST_ID, USER_ID, CONTENT, IMAGE_URL, CREATED_AT, UPDATED_AT, IS_DELETED)
+        VALUES (SEQ_POST_ID.NEXTVAL, #{userId}, #{content}, #{imageUrl}, SYSDATE, SYSDATE, 'N')
+    </insert>
+
+    <update id="updatePost" parameterType="postVO">
+        UPDATE POSTS
+        SET CONTENT = #{content},
+            IMAGE_URL = #{imageUrl},
+            UPDATED_AT = SYSDATE
+        WHERE POST_ID = #{postId}
+    </update>
+
+    <delete id="deletePost" parameterType="long">
+        UPDATE POSTS SET IS_DELETED = 'Y' WHERE POST_ID = #{postId}
+    </delete>
+
+    <!-- 게시글 목록 + 작성자 이름, 미리보기 등 조인 쿼리 예시 -->
+    <select id="selectPostListWithUser" resultType="map">
+        SELECT
+            p.POST_ID,
+            u.PROFILE_NAME,
+            SUBSTR(p.CONTENT, 1, 50) || '...' as CONTENT_PREVIEW,
+            p.LIKE_COUNT,
+            p.COMMENT_COUNT,
+            p.CREATED_AT
+        FROM POSTS p
+        JOIN USERS u ON p.USER_ID = u.USER_ID
+        WHERE p.IS_DELETED = 'N'
+        ORDER BY p.LIKE_COUNT DESC, p.CREATED_AT DESC
+    </select>
+
+</mapper>
