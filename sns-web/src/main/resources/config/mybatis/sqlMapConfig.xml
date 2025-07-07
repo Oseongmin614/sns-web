@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 전역 설정 -->
+    <settings>
+     
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="useGeneratedKeys" value="true"/>
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+
+    <!-- 타입 별칭 정의 -->
+    <typeAliases>
+  
+        <typeAlias type="kr.ac.kopo.sns.vo.UserVO" alias="userVO"/>
+        
+  
+        <typeAlias type="kr.ac.kopo.sns.vo.PostVO" alias="postVO"/>
+        
+
+        <typeAlias type="kr.ac.kopo.sns.vo.CommentVO" alias="commentVO"/>
+        
+
+        <typeAlias type="kr.ac.kopo.sns.vo.ReportVO" alias="reportVO"/>
+        
+      
+     
+    </typeAliases>
+
+    <!-- 타입 핸들러 (Oracle 특화) -->
+    <typeHandlers>
+        <!-- Oracle DATE 타입을 java.util.Date로 처리 -->
+        <typeHandler handler="org.apache.ibatis.type.DateTypeHandler" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <typeHandler handler="org.apache.ibatis.type.DateTypeHandler" javaType="java.util.Date" jdbcType="DATE"/>
+        
+        <!-- Oracle CLOB 타입을 String으로 처리 -->
+        <typeHandler handler="org.apache.ibatis.type.ClobTypeHandler" javaType="String" jdbcType="CLOB"/>
+    </typeHandlers>
+
+    <!-- 환경 설정 (주로 Spring에서 관리하므로 주석 처리) -->
+    <!--
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+                <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+                <property name="username" value="snsweb"/>
+                <property name="password" value="1234"/>
+            </dataSource>
+        </environment>
+    </environments>
+    -->
+
+    <!-- 매퍼 파일 등록 (Spring에서 자동 관리하므로 주석 처리) -->
+    <!--
+    <mappers>
+        <mapper resource="config/sqlmap/oracle/userMapper.xml"/>
+    </mappers>
+    -->
+</configuration>

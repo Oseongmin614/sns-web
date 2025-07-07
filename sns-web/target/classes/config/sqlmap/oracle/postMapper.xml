@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.ac.kopo.sns.dao.PostDAO">
+
+    <resultMap id="postWithUserMap" type="postVO">
+        <id property="postId" column="POST_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="imageUrl" column="IMAGE_URL"/>
+        <result property="likeCount" column="LIKE_COUNT"/>
+        <result property="status" column="STATUS"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="profileImg" column="PROFILE_IMG"/>
+    </resultMap>
+
+    <!-- 최신순 무한스크롤: lastId(이전 마지막 게시글 PK) 이후 limit개 -->
+    <select id="selectFeedChunk" parameterType="map" resultMap="postWithUserMap">
+        SELECT * FROM (
+            SELECT 
+                p.POST_ID,
+                p.USER_ID,
+                p.CONTENT,
+                p.IMAGE_URL,
+                p.LIKE_COUNT,
+                p.STATUS,
+                p.CREATED_AT,
+                p.UPDATED_AT,
+                u.NICKNAME,
+                u.PROFILE_IMG,
+                ROW_NUMBER() OVER (ORDER BY p.CREATED_AT DESC, p.POST_ID DESC) as RN
+            FROM POSTS p
+            INNER JOIN USERS u ON p.USER_ID = u.USER_ID
+            WHERE p.STATUS = 'ACTIVE'
+            <if test="lastId != null">
+                AND p.POST_ID &lt; #{lastId}
+            </if>
+        )
+        WHERE RN &lt;= #{limit}
+    </select>
+</mapper>
