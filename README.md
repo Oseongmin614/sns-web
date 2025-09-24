@@ -11,6 +11,7 @@
 이 프로젝트는 Spring Boot 기반의 소셜 네트워크 서비스(SNS) 백엔드 시스템입니다. 사용자 간 콘텐츠 공유 및 상호작용을 중심으로, 안정적인 백엔드 시스템 구축과 효율적인 데이터 처리에 중점을 두었습니다.
 
 개인 프로젝트로 진행하며 백엔드 아키텍처 설계부터 RESTful API 구현, 데이터베이스 연동, 클라우드 스토리지 통합까지 웹 애플리케이션 개발의 전반적인 과정을 경험했습니다.
+<img width="1150" height="802" alt="image" src="https://github.com/user-attachments/assets/bc65c33f-07df-4cbf-86bb-fd2c70b7cc4b" />
 
 ## 🚀 주요 기능
 
